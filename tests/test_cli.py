@@ -26,6 +26,9 @@ def test_language_detection():
     assert language_of("src/app/core.clj") == "clojure"
     assert language_of("src/app/core.cljd") == "clojure"
     assert language_of("Widget.java") == "java"
+    assert language_of("Board.cs") == "csharp"
+    assert is_test_file("BoardTests.cs") is True
+    assert is_test_file("Board.cs") is False
     assert language_of("board.go") == "go"
     assert language_of("ui/view.tsx") == "typescript"
     assert language_of("src/lib.rs") == "rust"

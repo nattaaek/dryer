@@ -88,6 +88,35 @@ def _java_nodes(data: bytes, root) -> list:
     return found
 
 
+def _csharp_hidden(node) -> bool:
+    current = node.parent
+    while current is not None:
+        if node.type == "local_function_statement" and current.type == "method_declaration":
+            current = current.parent
+            continue
+        if current.type in {
+            "method_declaration",
+            "constructor_declaration",
+            "lambda_expression",
+            "local_function_statement",
+        }:
+            return True
+        current = current.parent
+    return False
+
+
+def _csharp_nodes(data: bytes, root) -> list:
+    found = []
+    stack = [root]
+    while stack:
+        node = stack.pop()
+        if node.type in {"method_declaration", "local_function_statement"}:
+            if _has(node, "block", "arrow_expression_clause") and not _csharp_hidden(node):
+                found.append(node)
+        stack.extend(reversed(node.children))
+    return found
+
+
 def _go_nodes(data: bytes, root) -> list:
     found = []
     for node in descendants(root):
@@ -145,6 +174,7 @@ def _rust_nodes(data: bytes, root) -> list:
 
 _PICKERS = {
     "java": ("java", _java_nodes),
+    "csharp": ("csharp", _csharp_nodes),
     "go": ("go", _go_nodes),
     "python": ("python", _python_nodes),
     "typescript": (_grammar, _typescript_nodes),

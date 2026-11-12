@@ -37,6 +37,24 @@ class Right {
 }
 """
 
+CSHARP_LEFT = """\
+class Left {
+  int Alpha(int[] xs) {
+    int[] ys = filter(xs, odd);
+    return map(ys, inc);
+  }
+}
+"""
+
+CSHARP_RIGHT = """\
+class Right {
+  int Beta(int[] items) {
+    int[] kept = filter(items, even);
+    return map(kept, dec);
+  }
+}
+"""
+
 GO_LEFT = """\
 package demo
 
@@ -126,6 +144,8 @@ def test_each_language_matches_renamed_locals(tmp_path):
         "right.tsx": TSX_RIGHT,
         "left.rs": RUST_LEFT,
         "right.rs": RUST_RIGHT,
+        "left.cs": CSHARP_LEFT,
+        "right.cs": CSHARP_RIGHT,
     }
     for name, source in samples.items():
         write_source(tmp_path, name, source)
@@ -133,7 +153,7 @@ def test_each_language_matches_renamed_locals(tmp_path):
     by_language = {}
     for item in found:
         by_language.setdefault(item.language, []).append(item)
-    assert set(by_language) == {"java", "go", "python", "typescript", "rust"}
+    assert set(by_language) == {"java", "go", "python", "typescript", "rust", "csharp"}
     assert [(item.left.file, item.right.file) for item in by_language["typescript"]] == [
         ("left.ts", "right.ts"),
         ("left.tsx", "right.tsx"),

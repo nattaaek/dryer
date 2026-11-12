@@ -14,6 +14,7 @@ EXTENSIONS = {
     ".cljd": "clojure",
     ".bb": "clojure",
     ".java": "java",
+    ".cs": "csharp",
     ".go": "go",
     ".ts": "typescript",
     ".tsx": "typescript",
@@ -35,6 +36,8 @@ SKIP_DIRS = {
     "target",
     "dist",
     "build",
+    "bin",
+    "obj",
     "out",
     "coverage",
     ".metrics",
@@ -77,6 +80,8 @@ def is_test_file(path: str | Path) -> bool:
     if name == "conftest.py":
         return True
     if name.endswith("_test.py") or (name.startswith("test_") and name.endswith(".py")):
+        return True
+    if name.endswith(("Test.cs", "Tests.cs")):
         return True
     return any(part in TEST_DIRS for part in file_path.parts)
 
