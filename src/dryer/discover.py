@@ -14,6 +14,9 @@ EXTENSIONS = {
     ".cljd": "clojure",
     ".bb": "clojure",
     ".java": "java",
+    ".kt": "kotlin",
+    ".kts": "kotlin",
+    ".swift": "swift",
     ".cs": "csharp",
     ".go": "go",
     ".ts": "typescript",
@@ -26,6 +29,8 @@ EXTENSIONS = {
 
 SKIP_DIRS = {
     ".git",
+    ".build",
+    ".gradle",
     ".hg",
     ".svn",
     ".idea",
@@ -46,7 +51,7 @@ SKIP_DIRS = {
     ".clj-kondo",
 }
 
-TEST_DIRS = {"test", "tests", "spec", "specs", "__tests__"}
+TEST_DIRS = {"test", "tests", "spec", "specs", "__tests__", "Tests", "androidTest", "commonTest", "jvmTest", "iosTest"}
 
 
 def language_of(path: str | Path) -> str | None:
@@ -80,6 +85,8 @@ def is_test_file(path: str | Path) -> bool:
     if name == "conftest.py":
         return True
     if name.endswith("_test.py") or (name.startswith("test_") and name.endswith(".py")):
+        return True
+    if name.endswith(("Test.kt", "Tests.kt", "Test.kts", "Tests.kts", "Tests.swift", "Test.swift")):
         return True
     if name.endswith(("Test.cs", "Tests.cs")):
         return True

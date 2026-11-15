@@ -172,8 +172,20 @@ def _rust_nodes(data: bytes, root) -> list:
     return found
 
 
+def _kotlin_swift_nodes(data: bytes, root) -> list:
+    """Named functions, including expression bodies; closures remain in their owner."""
+    return [
+        node for node in descendants(root)
+        if node.type == "function_declaration"
+        and _has(node, "function_body")
+        and not _inside(node, {"function_declaration", "lambda_literal", "init_declaration", "secondary_constructor"})
+    ]
+
+
 _PICKERS = {
     "java": ("java", _java_nodes),
+    "kotlin": ("kotlin", _kotlin_swift_nodes),
+    "swift": ("swift", _kotlin_swift_nodes),
     "csharp": ("csharp", _csharp_nodes),
     "go": ("go", _go_nodes),
     "python": ("python", _python_nodes),

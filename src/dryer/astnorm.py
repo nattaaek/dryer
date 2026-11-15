@@ -22,6 +22,8 @@ _SKIP = {
 
 _IDENTIFIERS = {
     "identifier",
+    "simple_identifier",
+    "interpolated_identifier",
     "type_identifier",
     "field_identifier",
     "property_identifier",
@@ -33,6 +35,8 @@ _IDENTIFIERS = {
 _LITERALS = {
     "string",
     "string_literal",
+    "line_string_literal",
+    "multi_line_string_literal",
     "interpreted_string_literal",
     "raw_string_literal",
     "char_literal",
@@ -127,6 +131,7 @@ _ATTRIBUTES = {
     "selector_expression",
     "field_access",
     "field_expression",
+    "navigation_expression",
 }
 
 _SCOPED = {
@@ -134,7 +139,7 @@ _SCOPED = {
     "scoped_type_identifier",
 }
 
-_ARG_LISTS = {"argument_list", "arguments"}
+_ARG_LISTS = {"argument_list", "arguments", "call_suffix"}
 _TYPE_ARGS = {"type_arguments", "type_parameters"}
 
 _DATA: bytes = b""
@@ -158,7 +163,7 @@ _PENDING = object()
 def _is_literal(node) -> bool:
     if node.type not in _LITERALS:
         return False
-    if node.type == "string" and any(child.type == "interpolation" for child in node.children):
+    if any(child.type in {"interpolation", "interpolated_expression", "interpolated_identifier", "interpolation_identifier_start"} for child in node.children):
         return False
     return True
 
@@ -201,6 +206,8 @@ def _try_leaf(node, mode: str, head: bool):
         return _PENDING
     if node.type in _SKIP:
         return None
+    if node.type in {"custom_operator", "infix_operator"}:
+        return [K("symbol"), _text(node)]
     if node.type in _OPERATORS:
         return [K("symbol"), node.type]
     if not node.is_named:
@@ -262,7 +269,7 @@ def _jobs(node, mode: str, head: bool):
         return _callee_jobs(node)
     if mode == "path":
         return _path_jobs(node)
-    if node.type == "parenthesized_expression" and len(node.named_children) == 1:
+    if node.type in {"parenthesized_expression", "navigation_suffix"} and len(node.named_children) == 1:
         return [(node.named_children[0], "norm", head)]
     if node.type in _CALLS:
         return _call_jobs(node)
@@ -359,7 +366,7 @@ def _assemble(node, mode: str, head: bool, cache):
         return _callee_value(node, cache)
     if mode == "path":
         return _assemble_path(node, cache)
-    if node.type == "parenthesized_expression" and len(node.named_children) == 1:
+    if node.type in {"parenthesized_expression", "navigation_suffix"} and len(node.named_children) == 1:
         child = node.named_children[0]
         return cache[(id(child), "norm", head)]
     if node.type in _CALLS:

@@ -1,6 +1,6 @@
 # dryer
 
-dryer finds candidate duplicate code in Clojure, Java, C#, Go, TypeScript, Rust, and Python. One run detects the language of each source file, normalizes that language's forms, and reports pairs whose structure is close enough to review.
+dryer finds candidate duplicate code in Clojure, Java, C#, Go, TypeScript, Rust, Python, Kotlin, and Swift. One run detects the language of each source file, normalizes that language's forms, and reports pairs whose structure is close enough to review.
 
 Clojure follows [dry4clj](https://github.com/unclebob/dry4clj). The other languages use the same idea on the functions and methods [crapper](https://github.com/unclebob/crapper) and [mutator](https://github.com/unclebob/mutator) already treat as one unit. A form is only compared with forms written in the same language.
 
@@ -102,6 +102,10 @@ DUPLICATE score=0.89
 | TypeScript | functions, methods, and top-level arrow functions | callbacks nested inside another function |
 | Rust | functions and methods with a body | functions inside `mod tests`, and closures |
 | Python | functions and methods | functions nested inside another function |
+| Kotlin | named functions and methods, including extension and expression-body functions (`.kt`, `.kts`) | constructors, accessors, signatures without bodies, nested functions and lambdas as separate candidates |
+| Swift | named functions and methods in types and extensions | initializers, deinitializers, accessors, protocol requirements without bodies, nested functions and closures as separate candidates |
+
+Kotlin and Swift use their tree-sitter grammars. Calls and operators stay in fingerprints; parameter/local names and plain literals normalize away. Interpolated expressions remain structural. Closures and local functions contribute to their enclosing function. Top-level script statements are not standalone candidates. Test directories (including Swift `Tests` and Kotlin `androidTest`/`commonTest`/`jvmTest`/`iosTest`), conventional test filenames, `.gradle`, and `.build` are skipped during discovery. This is syntactic analysis, without compiler type resolution or macro expansion.
 
 Clojure reader conditionals keep the `:clj` branch, as dry4clj does. Syntax-quote is kept as a `syntax-quote` form rather than expanded.
 
@@ -113,4 +117,10 @@ A missing or unreadable Clojure form is reported on stderr. Forms read before it
 python3 -m venv .venv
 .venv/bin/pip install -e '.[dev]'
 .venv/bin/pytest
+```
+
+Kotlin and Swift smoke examples (each reports one duplicate at `1.00`):
+
+```bash
+./dryer --threshold 0.99 examples/kotlin examples/swift
 ```
