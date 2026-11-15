@@ -351,3 +351,10 @@ def test_a_second_report_replaces_the_snapshot(tmp_path, capsys):
     assert run(args) == 0
     assert run(args) == 0
     assert (tmp_path / ".metrics" / "dry.edn").read_text(encoding="utf-8") == "{:candidates []}\n"
+
+
+def test_help_lists_kotlin_and_swift(capsys):
+    assert run(["--help"]) == 0
+    output = capsys.readouterr().out
+    assert "Kotlin (.kt .kts)" in output
+    assert "Swift (.swift)" in output

@@ -91,7 +91,7 @@ def test_interpolation_is_not_erased(language, source):
 
 
 def test_build_and_test_directories_are_skipped(tmp_path):
-    for directory in ['.build', '.gradle', 'Tests', 'src/test', 'src/androidTest', 'src/commonTest']:
+    for directory in ['.build', '.swiftpm', '.gradle', 'Tests', 'src/test', 'src/androidTest', 'src/commonTest']:
         target = tmp_path / directory / 'Sample.kt'
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text('fun sample() = 1')

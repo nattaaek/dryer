@@ -30,6 +30,7 @@ EXTENSIONS = {
 SKIP_DIRS = {
     ".git",
     ".build",
+    ".swiftpm",
     ".gradle",
     ".hg",
     ".svn",

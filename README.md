@@ -105,7 +105,7 @@ DUPLICATE score=0.89
 | Kotlin | named functions and methods, including extension and expression-body functions (`.kt`, `.kts`) | constructors, accessors, signatures without bodies, nested functions and lambdas as separate candidates |
 | Swift | named functions and methods in types and extensions | initializers, deinitializers, accessors, protocol requirements without bodies, nested functions and closures as separate candidates |
 
-Kotlin and Swift use their tree-sitter grammars. Calls and operators stay in fingerprints; parameter/local names and plain literals normalize away. Interpolated expressions remain structural. Closures and local functions contribute to their enclosing function. Top-level script statements are not standalone candidates. Test directories (including Swift `Tests` and Kotlin `androidTest`/`commonTest`/`jvmTest`/`iosTest`), conventional test filenames, `.gradle`, and `.build` are skipped during discovery. This is syntactic analysis, without compiler type resolution or macro expansion.
+Kotlin and Swift use their tree-sitter grammars. Calls and operators stay in fingerprints; parameter/local names and plain literals normalize away. Interpolated expressions remain structural. Closures and local functions contribute to their enclosing function. Top-level script statements are not standalone candidates. Test directories (including Swift `Tests` and Kotlin `androidTest`/`commonTest`/`jvmTest`/`iosTest`), conventional test filenames, `.gradle`, `.swiftpm`, and `.build` are skipped during discovery. This is syntactic analysis, without compiler type resolution or macro expansion.
 
 Clojure reader conditionals keep the `:clj` branch, as dry4clj does. Syntax-quote is kept as a `syntax-quote` form rather than expanded.
 

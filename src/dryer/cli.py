@@ -22,7 +22,7 @@ HELP = f"""\
 Usage: dryer [options] [path-or-filter ...]
 
 Find candidate duplicate code in Clojure, Java, C#, Go, TypeScript, Rust,
-and Python. Each form is normalized — call and method names, operators, and
+Python, Kotlin, and Swift. Each form is normalized — call and method names, operators, and
 tree shape stay; local names, field names, and literals do not — and compared
 with the other forms of the same language. The score is Jaccard similarity of
 those structural fingerprints, the same score as dry4clj.
@@ -30,7 +30,8 @@ those structural fingerprints, the same score as dry4clj.
 Prints a report and writes .metrics/dry.edn.
 
 Languages: Clojure (.clj .cljc .cljs .cljd .bb), Java (.java), C# (.cs), Go (.go),
-TypeScript (.ts .tsx .mts .cts), Rust (.rs), Python (.py).
+TypeScript (.ts .tsx .mts .cts), Rust (.rs), Python (.py),
+Kotlin (.kt .kts), Swift (.swift).
 
 Options:
   -h, --help                    Print this help and exit.
